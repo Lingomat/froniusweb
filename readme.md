@@ -4,9 +4,10 @@
 
 This is a web component that displays real-time and archive data from a Fronius inverter. It connects directly to the Fronius inverter API locally rather than via solar web. It is intended to run on a small screen such as a Raspberry Pi gadget. It assumes there is a smart meter installed. It's also not going to work right if your smart meter is on demand rather than supply. Shrug, I'm sure you can figure it out.
 
-Fronius REST API is seriously hot garbage. The best I can say is at least there is an API and it generally works.
+![Froniusweb screenshot](/screenshot.png)
 
-Requests take many seconds to complete with the exception of /solar_api/v1/GetPowerFlowRealtimeData.fcgi, which only takes tens of milliseconds. It seems this fast cgi was some afterthought second process?
+Fronius REST API is seriously hot garbage. The best I can say is at least there is an API and it generally works. Requests take many seconds to complete with the exception of /solar_api/v1/GetPowerFlowRealtimeData.fcgi, which only takes tens of milliseconds. It seems this fast cgi was some afterthought second process?
+
 Seriously, how hard would it be to realise that all we want is a small set of power data, both instaneous and day accumulated, but no, each API gives you mountains of shit you don't want, most of which you have to guess because they're not explained in the docs, and you're forced to make multiple slow API calls just to get five or six items of data. What's wrong with these guys?
 
 This code makes sparing use of slower API commands, particularly so for the historical data for the graphs which is done on start up and every 15 minutes. 
@@ -18,8 +19,6 @@ const dom = 'http://192.168.1.250:8157/http://192.168.1.240'
 ```
 
 The first IP/port is the CORS proxy and the second is the address of the inverter on the local network.
-
-![Froniusweb screenshot](/screenshot.png)
 
 ## Using this component
 

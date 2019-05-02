@@ -1,0 +1,67 @@
+div#wrapper {
+  position: relative;
+  background-color: black;
+  font-family: 'Russo One', sans-serif;
+  color: rgba(255,255,255,0.7);
+  width: 800px;
+  height: 480px;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* canvas#power {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+  width: 800px;
+  height: 480px;
+} */
+
+div.text {
+  position: absolute;
+  left: 40px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+  
+}
+div.row {
+  display: flex;
+  flex-direction: row;
+  height: 55px;
+}
+div.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+div.column.label {
+  width: 60px;
+  font-size: 18px;
+  padding-bottom: 8px;
+}
+div.column.value {
+  padding-left: 8px;
+  width: 210px;
+  font-size: 48px;
+}
+div.column.label > span {
+  margin-left: auto;
+}
+span.output {
+  color: rgb(99, 255, 99);
+}
+span.load {
+  color: rgb(255, 99, 99);
+}
+span.txt {
+  filter: drop-shadow(3px 3px 0px black);
+}
+.chart-container {
+  width: 800px;
+  height: 425px
+}

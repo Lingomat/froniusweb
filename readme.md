@@ -19,6 +19,8 @@ const dom = 'http://192.168.1.250:8157/http://192.168.1.240'
 
 The first IP/port is the CORS proxy and the second is the address of the inverter on the local network.
 
+![Froniusweb screenshot](/screenshot.png)
+
 ## Using this component
 
 ### Script tag

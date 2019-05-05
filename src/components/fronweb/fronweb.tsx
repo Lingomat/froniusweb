@@ -53,11 +53,11 @@ export class FronwebComponent {
     this.datasub = observeData(this.apiurl).subscribe((dat) => {
       if (dat.realtime) {
         this.powerdata = dat.realtime
+        this.powerdata = Object.assign({}, dat.realtime) // copy needed to trigger state refresh
       }
       if (dat.archive) {
         this.doPChart(dat.archive.produced, dat.archive.consumed, dat.archive.power, dat.archive.load)
       }
-      //this.powerdata = Object.assign({}, t); 
     })
     this.started = true
   }

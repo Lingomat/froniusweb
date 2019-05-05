@@ -90,6 +90,7 @@ export function observeData(apiurl: string, realtimesec: number = 5, archiveskip
     let counter = 0
     while (1) {
       try {
+        console.log('fetching from GetPowerFlowRealtimeData.fcgi')
         let fdata = await getJson(apiurl + '/solar_api/v1/GetPowerFlowRealtimeData.fcgi')
         froniusdata.pv = fdata.Body.Data.Site.P_PV
         froniusdata.grid = fdata.Body.Data.Site.P_Grid
@@ -108,7 +109,7 @@ export function observeData(apiurl: string, realtimesec: number = 5, archiveskip
         }
       } 
       const elapsed = getMillis() - oldtime
-      await waitMillis(Math.max(realtimesec-elapsed, 0))
+      await waitMillis(Math.max((realtimesec*1000)-elapsed, 0))
       oldtime = getMillis()
       ++counter
     }

@@ -16,7 +16,11 @@
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
-  "dependencies": {},
+  "dependencies": {
+    "chart.js": "^2.8.0",
+    "moment": "^2.24.0",
+    "rxjs": "^6.5.1"
+  },
   "devDependencies": {
     "@stencil/core": "~0.16.2"
   },

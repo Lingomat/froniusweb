@@ -12,8 +12,14 @@ import '@stencil/core';
 
 export namespace Components {
 
-  interface FronwebComponent {}
-  interface FronwebComponentAttributes extends StencilHTMLAttributes {}
+  interface FronwebComponent {
+    'apiurl': string;
+    'pause': () => void;
+    'resume': () => void;
+  }
+  interface FronwebComponentAttributes extends StencilHTMLAttributes {
+    'apiurl'?: string;
+  }
 }
 
 declare global {

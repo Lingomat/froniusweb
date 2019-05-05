@@ -12,24 +12,28 @@ Seriously, how hard would it be to realise that all we want is a small set of po
 
 This code makes sparing use of slower API commands, particularly so for the historical data for the graphs which is done on start up and every 15 minutes. 
 
-Note that REST requests need CORS enabled end-points to work from web clients. The Fronius inverter doesn't do this naturally, not even whitelisting the local LAN, so it will need to be used in conjunction with a CORS proxy. This is hard coded in the utils.ts, for example:
+Note that REST requests need CORS enabled end-points to work from web clients. The Fronius inverter doesn't do this naturally, not even whitelisting the local LAN, so it will need to be used in conjunction with a CORS proxy as as https://github.com/Rob--W/cors-anywhere.
+
+You must pass the API URL to the component via the apiurl property. With CORS anywhere proxy, this might look something like this where the first IP/port is the CORS proxy and the second is the address of the inverter on the local network.
 
 ```
-const dom = 'http://192.168.1.250:8157/http://192.168.1.240'
+<fronweb-component apiurl="http://192.168.1.250:8157/http://192.168.1.240"></fronweb-component>
 ```
 
-The first IP/port is the CORS proxy and the second is the address of the inverter on the local network.
+## Methods
+
+pause() --- will pause the updates, and stop data fetching
+resume() --- resumes data updates
 
 ## Using this component
 
 ### Script tag
 
-- [Publish to NPM](https://docs.npmjs.com/getting-started/publishing-npm-packages)
-- Put a script tag similar to this `<script src='https://unpkg.com/my-component@0.0.1/dist/mycomponent.js'></script>` in the head of your index.html
+- Put a script tag similar to this `<script src='https://unpkg.com/froniuswebcomponent/dist/fronweb.js'></script>` in the head of your index.html
 - Then you can use the element anywhere in your template, JSX, html etc
 
 ### Node Modules
-- Run `npm install my-component --save`
+- Run `npm install froniuswebcomponent --save`
 - Put a script tag similar to this `<script src='node_modules/my-component/dist/mycomponent.js'></script>` in the head of your index.html
 - Then you can use the element anywhere in your template, JSX, html etc
 

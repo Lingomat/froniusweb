@@ -1,7 +1,9 @@
-import { Component, State, Element } from '@stencil/core';
-import { observeData, PowerData, observeArchive } from '../../utils/utils';
+import { Component, State, Element, Method, Prop } from '@stencil/core';
+import { observeData, PowerData} from '../../utils/utils';
 import Chart from 'chart.js'
 import moment from 'moment'
+import Subscription from 'rxjs'
+import { createInputFiles } from 'typescript';
 
 @Component({
   tag: 'fronweb-component',
@@ -9,15 +11,19 @@ import moment from 'moment'
   shadow: true
 })
 export class FronwebComponent {
+  @Prop() apiurl: string = ''
   @Element() private element: HTMLElement;
   @State() powerdata: PowerData = {pv: 0, grid: 0, load: 0, pvday: 0}
   canvasElement: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
   chart: Chart = null
-  async componentWillLoad() {
-    observeData().subscribe((t) => {
-      this.powerdata = Object.assign({}, t); 
-    })
+  datasub: Subscription.Subscription
+  started: boolean = false
+
+  async componentDidLoad() {
+    this.canvasElement = this.element.shadowRoot.querySelector('#power');
+    this.ctx = this.canvasElement.getContext('2d')
+    this.subscribeToData()
   }
 
   formatPower (num: number, h: boolean = false): string {
@@ -29,15 +35,34 @@ export class FronwebComponent {
     }
   }
 
-  componentDidLoad() {
-    this.canvasElement = this.element.shadowRoot.querySelector('#power');
-    this.ctx = this.canvasElement.getContext('2d')
-    observeArchive().subscribe(([produced, consumed, power, loaddat]) => {
-      this.doPChart(produced, consumed, power, loaddat)
-    })
+  @Method()
+  pause() {
+    if (this.datasub) {
+      this.datasub.unsubscribe()
+      this.started = false
+    }
+  }
+  @Method()
+  resume() {
+    if (!this.started) {
+      this.subscribeToData
+    }
   }
 
-  async doPChart(produced, consumed, power, loaddat) {
+  subscribeToData() {
+    this.datasub = observeData(this.apiurl).subscribe((dat) => {
+      if (dat.realtime) {
+        this.powerdata = dat.realtime
+      }
+      if (dat.archive) {
+        this.doPChart(dat.archive.produced, dat.archive.consumed, dat.archive.power, dat.archive.load)
+      }
+      //this.powerdata = Object.assign({}, t); 
+    })
+    this.started = true
+  }
+
+  async doPChart(produced: {t: moment.Moment, y: number}[], consumed: {t: moment.Moment, y: number}[], power: {t: moment.Moment, y: number}[], loaddat: {t: moment.Moment, y: number}[]) {
     if (this.chart) {
       this.chart.data.datasets[0].data = produced
       this.chart.data.datasets[1].data = consumed
@@ -48,7 +73,8 @@ export class FronwebComponent {
       this.setupChart(produced, consumed, power, loaddat)
     }
   }
-  setupChart(produced, consumed, power, loaddat) {
+
+  setupChart(produced: {t: moment.Moment, y: number}[], consumed: {t: moment.Moment, y: number}[], power: {t: moment.Moment, y: number}[], loaddat: {t: moment.Moment, y: number}[]) {
     this.chart = new Chart(this.ctx, {
       type: 'line',
       data: {

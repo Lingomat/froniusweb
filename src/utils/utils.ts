@@ -43,13 +43,13 @@ export function observeData(apiurl: string, realtimesec: number = 5, archiveskip
       let clean1 = rawdata.Body.Data
       return clean1[Object.keys(clean1)[0]].Data[channel].Values
     }
-    console.log('fetching EnergyReal_WAC_Sum_Produced')
+    console.log('fronweb: fetching EnergyReal_WAC_Sum_Produced')
     let produced  = await getArchive('EnergyReal_WAC_Sum_Produced')
-    console.log('fetching EnergyReal_WAC_Plus_Absolute')
+    console.log('fronweb: fetching EnergyReal_WAC_Plus_Absolute')
     let exportedplus = await getArchive('EnergyReal_WAC_Plus_Absolute')
-    console.log('fetching EnergyReal_WAC_Minus_Absolute')
+    console.log('fronweb: fetching EnergyReal_WAC_Minus_Absolute')
     let exportedminus = await getArchive('EnergyReal_WAC_Minus_Absolute')
-    console.log('fetching PowerReal_PAC_Sum')
+    console.log('fronweb: fetching PowerReal_PAC_Sum')
     let pvpower = await getArchive('PowerReal_PAC_Sum')
     let proddat = []
     let consdat = []
@@ -90,7 +90,7 @@ export function observeData(apiurl: string, realtimesec: number = 5, archiveskip
     let counter = 0
     while (1) {
       try {
-        console.log('fetching from GetPowerFlowRealtimeData.fcgi')
+        console.log('fronweb: fetching GetPowerFlowRealtimeData.fcgi')
         let fdata = await getJson(apiurl + '/solar_api/v1/GetPowerFlowRealtimeData.fcgi')
         froniusdata.pv = fdata.Body.Data.Site.P_PV
         froniusdata.grid = fdata.Body.Data.Site.P_Grid

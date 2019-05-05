@@ -37,7 +37,8 @@ export class FronwebComponent {
 
   @Method()
   pause() {
-    if (this.datasub) {
+    if (this.started) {
+      console.log('fronweb: pausing')
       this.datasub.unsubscribe()
       this.started = false
     }
@@ -45,6 +46,7 @@ export class FronwebComponent {
   @Method()
   resume() {
     if (!this.started) {
+      console.log('fronweb: resuming')
       this.subscribeToData()
     }
   }

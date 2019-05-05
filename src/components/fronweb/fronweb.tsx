@@ -45,7 +45,7 @@ export class FronwebComponent {
   @Method()
   resume() {
     if (!this.started) {
-      this.subscribeToData
+      this.subscribeToData()
     }
   }
 

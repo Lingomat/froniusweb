@@ -15,21 +15,10 @@ export interface ArchiveData {
   load: {t: moment.Moment, y: number}[],
 }
 
-export function observeData(apiurl: string, realtimesec: number = 5, archiveskip: number = 120): Observable<{realtime?: PowerData, archive?: ArchiveData}> {
+export function observeData(apiurl: string, realtimesec: number = 5, archivesec: number = 600): Observable<{realtime?: PowerData, archive?: ArchiveData}> {
   const getJson = async (url: string): Promise<any> => {
     let resp = await fetch(url)
     return await resp.json()
-  }
-  const getMillis = (): number => {
-    let d = new Date()
-    return d.getMilliseconds()
-  }
-  const waitMillis = (ms: number): Promise<any> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve()
-      }, ms)
-    })
   }
   const getCalcArchive = async (apiurl: string): Promise<ArchiveData> => {
     const getArchive = async (channel: string) => {
@@ -83,35 +72,60 @@ export function observeData(apiurl: string, realtimesec: number = 5, archiveskip
       load: loaddat
     }
   }
-  return Observable.create(async (observer) => {
-    let froniusdata: PowerData = {pv: 0, grid: 0, load: 0, pvday: 0}
-    let archivedata: ArchiveData = {produced: [], consumed: [], power: [], load: []}
-    let oldtime = getMillis()
-    let counter = 0
-    while (1) {
+  return Observable.create(function(observer) {
+    let rtrunning: boolean = false
+    let arunning: boolean = false
+    const doRealtime = async () => {
+      if (rtrunning) {
+        return
+      }
+      rtrunning = true
       try {
         console.log('fronweb: fetching GetPowerFlowRealtimeData.fcgi')
-        let fdata = await getJson(apiurl + '/solar_api/v1/GetPowerFlowRealtimeData.fcgi')
-        froniusdata.pv = fdata.Body.Data.Site.P_PV
-        froniusdata.grid = fdata.Body.Data.Site.P_Grid
-        froniusdata.load = fdata.Body.Data.Site.P_Load
-        froniusdata.pvday =  fdata.Body.Data.Site.E_Day
-        observer.next({realtime: froniusdata})
+        getJson(apiurl + '/solar_api/v1/GetPowerFlowRealtimeData.fcgi').then((fdata) => {
+          observer.next({realtime: {
+            pv: fdata.Body.Data.Site.P_PV,
+            grid: fdata.Body.Data.Site.P_Grid,
+            load: fdata.Body.Data.Site.P_Load,
+            pvday: fdata.Body.Data.Site.E_Day
+          }})
+          rtrunning = false
+        })
       } catch(e) {
         console.error('observeData() explode', e)
-      }
-      if (counter % archiveskip == 0) {
-        try {
-          archivedata = await getCalcArchive(apiurl)
-          observer.next({archive: archivedata})
-        } catch(e) {
-          console.error('observeData() explode', e)
-        }
+        rtrunning = false
       } 
-      const elapsed = getMillis() - oldtime
-      await waitMillis(Math.max((realtimesec*1000)-elapsed, 0))
-      oldtime = getMillis()
-      ++counter
+    }
+    const doArchive = async () => {
+      if (arunning) {
+        return
+      }
+      arunning = true
+      try {
+        getCalcArchive(apiurl).then((archivedata) => {
+          observer.next({archive: archivedata})
+          arunning = false
+        })
+      } catch(e) {
+        console.error('observeData() explode', e)
+        arunning = false
+      }       
+    }
+    // right away
+    doRealtime() 
+    // realtime timer
+    const rtinterval = setInterval(async () => {
+      doRealtime()
+    }, realtimesec*1000)
+    // right away
+    doArchive()
+    // archive timer
+    const ainterval = setInterval(async () => {
+      doArchive()
+    }, archivesec*1000)
+    return () => {
+      clearInterval(rtinterval)
+      clearInterval(ainterval)
     }
   })
 }

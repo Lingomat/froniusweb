@@ -1,5 +1,5 @@
 import { Component, State, Element, Method, Prop } from '@stencil/core';
-import { observeData, PowerData} from '../../utils/utils';
+import { observeData, PowerData } from '../../utils/utils';
 import Chart from 'chart.js'
 import moment from 'moment'
 import Subscription from 'rxjs'
@@ -39,6 +39,7 @@ export class FronwebComponent {
   pause() {
     if (this.started) {
       console.log('fronweb: pausing')
+      console.log('datasub',this.datasub)
       this.datasub.unsubscribe()
       this.started = false
     }
@@ -52,7 +53,7 @@ export class FronwebComponent {
   }
 
   subscribeToData() {
-    this.datasub = observeData(this.apiurl).subscribe((dat) => {
+    this.datasub = observeData(this.apiurl, 10, 600).subscribe((dat) => {
       if (dat.realtime) {
         this.powerdata = dat.realtime
         this.powerdata = Object.assign({}, dat.realtime) // copy needed to trigger state refresh

@@ -71,6 +71,7 @@ export class FronwebComponent {
       this.chart.data.datasets[1].data = consumed
       this.chart.data.datasets[2].data = power
       this.chart.data.datasets[3].data = loaddat
+      this.chart.options.scales = this.makeChartScales()
       this.chart.update()
     } else {
       this.setupChart(produced, consumed, power, loaddat)
@@ -128,47 +129,51 @@ export class FronwebComponent {
           point: { radius: 0 },
           line: { borderWidth: 2}
         },
-        scales: {
-          xAxes: [{
-              type: 'time',
-              time: {
-                min: moment().startOf('day'),
-              },
-              ticks: {
-                fontColor: 'rgb(120,120,120)',
-                suggestedMax: moment().endOf('day'),
-              },
-              gridLines: {
-                color: 'rgba(200,200,200,0.4)'
-              },
-          }],
-          yAxes: [{
-            id: 'A',
-            type: 'linear',
-            position: 'left',
-            ticks: {
-              fontColor: 'rgb(120,120,120)',
-              callback: function(value) {
-                return value + 'W';
-              }
-            },
-            gridLines: {
-              color: 'rgba(50,50,200,0.4)'
-            },
-          }, {
-            id: 'B',
-            type: 'linear',
-            position: 'right',
-            ticks: {
-              fontColor: 'rgb(120,120,120)',
-              callback: function(value) {
-                return value/1000 + 'kWh';
-              }
-            }
-          }]
-        }
+        scales: this.makeChartScales()
       }
     })
+  }
+
+  makeChartScales() {
+    return {
+      xAxes: [{
+        type: 'time',
+        time: {
+          min: moment().startOf('day'),
+        },
+        ticks: {
+          fontColor: 'rgb(120,120,120)',
+          suggestedMax: moment().endOf('day'),
+        },
+        gridLines: {
+          color: 'rgba(200,200,200,0.4)'
+        },
+      }],
+      yAxes: [{
+        id: 'A',
+        type: 'linear',
+        position: 'left',
+        ticks: {
+          fontColor: 'rgb(120,120,120)',
+          callback: function(value) {
+            return value + 'W';
+          }
+        },
+        gridLines: {
+          color: 'rgba(50,50,200,0.4)'
+        },
+      }, {
+        id: 'B',
+        type: 'linear',
+        position: 'right',
+        ticks: {
+          fontColor: 'rgb(120,120,120)',
+          callback: function(value) {
+            return value/1000 + 'kWh';
+          }
+        }
+      }]
+    }
   }
 
   getGridColour(): string {

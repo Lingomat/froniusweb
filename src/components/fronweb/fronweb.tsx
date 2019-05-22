@@ -195,15 +195,15 @@ export class FronwebComponent {
       <div class="text">
         <div class="row">
           <div class="column label"><span class="txt output">Solar</span></div>
-          <div class="column value"><span class="txt output">{this.formatPower(this.powerdata.pv)}</span></div>
+          <div class="column value left"><span class="txt output">{this.formatPower(this.powerdata.pv)}</span></div>
           <div class="column label"><span class="txt output">Today</span></div>
-          <div class="column value"><span class="txt output">{this.formatPower(this.powerdata.pvday)}h</span></div>
+          <div class="column value right"><span class="txt output">{this.formatPower(this.powerdata.pvday)}h</span></div>
         </div>
         <div class="row">
           <div class="column label"><span class="txt" style={{color: this.getGridColour()}}>Grid</span></div>
-          <div class="column value"><span class="txt" style={{color: this.getGridColour()}}>{this.formatPower(this.powerdata.grid)}</span></div>
-          <div class="column label"><span class="txt load">House</span></div>
-          <div class="column value"><span class="txt load">{this.formatPower(this.powerdata.load*-1)}</span></div>
+          <div class="column value left"><span class="txt" style={{color: this.getGridColour()}}>{this.formatPower(this.powerdata.grid)}</span></div>
+          <div class="column label"><span class="txt load">Load</span></div>
+          <div class="column value right"><span class="txt load">{this.formatPower(this.powerdata.load*-1)}</span></div>
         </div>
         <div class="row">
           

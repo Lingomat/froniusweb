@@ -32,7 +32,7 @@ div.text {
 div.row {
   display: flex;
   flex-direction: row;
-  height: 55px;
+  height: 52px;
 }
 div.column {
   display: flex;
@@ -46,8 +46,13 @@ div.column.label {
 }
 div.column.value {
   padding-left: 8px;
-  width: 210px;
   font-size: 48px;
+}
+div.column.value.left {
+  width: 200px;
+}
+div.column.value.right {
+  width: 260px;
 }
 div.column.label > span {
   margin-left: auto;

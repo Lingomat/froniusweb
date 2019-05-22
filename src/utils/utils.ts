@@ -84,7 +84,7 @@ export function observeData(apiurl: string, realtimesec: number = 5, archivesec:
         console.log('fronweb: fetching GetPowerFlowRealtimeData.fcgi')
         getJson(apiurl + '/solar_api/v1/GetPowerFlowRealtimeData.fcgi').then((fdata) => {
           observer.next({realtime: {
-            pv: fdata.Body.Data.Site.P_PV,
+            pv: fdata.Body.Data.Site.P_PV ? fdata.Body.Data.Site.P_PV : 0,
             grid: fdata.Body.Data.Site.P_Grid,
             load: fdata.Body.Data.Site.P_Load,
             pvday: fdata.Body.Data.Site.E_Day

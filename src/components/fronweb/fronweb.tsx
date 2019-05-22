@@ -26,12 +26,14 @@ export class FronwebComponent {
     this.subscribeToData()
   }
 
-  formatPower (num: number, h: boolean = false): string {
-    let hours: string = h ? 'h' : ''
+  formatPower (num: number = 0): string {
+    if (typeof num !== 'number') {
+      return '?'
+    }
     if (Math.abs(num) < 1000) {
-      return Math.round(num).toString()+'W' + hours
+      return Math.round(num).toString() + 'W'
     } else {
-      return (num/1000).toFixed(1)+'kW' + hours
+      return (num/1000).toFixed(1) + 'kW'
     }
   }
 
@@ -55,7 +57,6 @@ export class FronwebComponent {
   subscribeToData() {
     this.datasub = observeData(this.apiurl, 10, 600).subscribe((dat) => {
       if (dat.realtime) {
-        this.powerdata = dat.realtime
         this.powerdata = Object.assign({}, dat.realtime) // copy needed to trigger state refresh
       }
       if (dat.archive) {
@@ -156,7 +157,7 @@ export class FronwebComponent {
         ticks: {
           fontColor: 'rgb(120,120,120)',
           callback: function(value) {
-            return value + 'W';
+            return value.toString() + 'W';
           }
         },
         gridLines: {
@@ -169,7 +170,7 @@ export class FronwebComponent {
         ticks: {
           fontColor: 'rgb(120,120,120)',
           callback: function(value) {
-            return value/1000 + 'kWh';
+            return (value/1000).toString() + 'kWh';
           }
         }
       }]
@@ -196,7 +197,7 @@ export class FronwebComponent {
           <div class="column label"><span class="txt output">Solar</span></div>
           <div class="column value"><span class="txt output">{this.formatPower(this.powerdata.pv)}</span></div>
           <div class="column label"><span class="txt output">Today</span></div>
-          <div class="column value"><span class="txt output">{this.formatPower(this.powerdata.pvday, true)}</span></div>
+          <div class="column value"><span class="txt output">{this.formatPower(this.powerdata.pvday)}h</span></div>
         </div>
         <div class="row">
           <div class="column label"><span class="txt" style={{color: this.getGridColour()}}>Grid</span></div>
